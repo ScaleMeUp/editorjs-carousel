@@ -68,9 +68,7 @@ Your backend should return response in format
     "success": 1,
     "file": {
         "url": "https://domain.com/path/to/image.png",
-        //---
-        // you are able to add additional parameters
-        //---
+        ...
     }
 }
 ```

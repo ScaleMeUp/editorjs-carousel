@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@scalemeup/editorjs-carousel</title>
+
+    <script src="./dist/bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <style>
+        .editor-wrapper {
+            background-color: #fff9f1;
+            max-width: 800px;
+            margin: 100px auto;
+        }
+        .editorjs {
+            padding: 100px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="editor-wrapper">
+    <div id="editorjs"></div>
+
+    <div>
+        <button type="button" onclick="save();">Save</button>
+    </div>
+</div>
+
+<script>
+    const Carousel = window.Carousel;
+    const dataDump = {};
+
+    const editor = new EditorJS({
+        autofocus: true,
+        tools: {
+            carousel: {
+                class: Carousel,
+                config: {
+                    endpoints: {
+                        byFile: 'http://localhost:8008/uploadFile',
+                        byUrl: 'http://localhost:8008/fetchUrl',
+                    }
+                },
+            }
+        },
+        data: dataDump,
+    });
+
+    const save = () => {
+        editor.save().then(data => {
+            console.log('DataDump', JSON.stringify(data))
+            console.log('Data: ', data.blocks)
+        })
+    }
+</script>
+
+</body>
+</html>

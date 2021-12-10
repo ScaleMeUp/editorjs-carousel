@@ -1,5 +1,7 @@
 // eslint-disable-next-line require-jsdoc
 import Uploader from './uploader';
+import Tunes from './tunes';
+import Ui from './ui';
 import buttonIcon from './svg/button-icon.svg';
 require('./index.css').toString();
 
@@ -34,6 +36,55 @@ export default class SimpleCarousel {
       onUpload: (response) => this.onUpload(response),
       onError: (error) => this.uploadingFailed(error)
     });
+
+    /**
+     * Module for working with UI
+     */
+    this.ui = new Ui({
+      api,
+      config: this.config,
+      onSelectFile: () => {
+        this.uploader.uploadSelectedFile({
+          onPreview: (src) => {
+            this.ui.showPreloader(src);
+          },
+        });
+      },
+    });
+
+    this.tunes = new Tunes({
+      api,
+      actions: this.config.actions,
+      onChange: (tuneName) => this.tuneToggled(tuneName)
+    });
+
+    /**
+     * Set saved state
+     */
+    this.tunesState = {
+      slider: this.data.slider || false,
+      stretched: this.data.stretched || false,
+    };
+  }
+
+  /**
+   * Set one tune
+   */
+  tuneToggled(tuneName) {
+    this.setTune(tuneName, !this.tunesState[tuneName]);
+  }
+
+  /**
+   * Set one tune
+   *
+   * @param {string} tuneName - {@link Tunes.tunes}
+   * @param {boolean} value - tune state
+   * @returns {void}
+   */
+  setTune(tuneName, value) {
+    this.tunesState[tuneName] = value;
+
+    this.ui.applyTune(tuneName, value);
   }
 
   /**
@@ -104,8 +155,11 @@ export default class SimpleCarousel {
 
     this.list.appendChild(this.addButton);
     this.wrapper.appendChild(this.list);
-    if (this.data.length > 0) {
-      for (const load of this.data) {
+
+    const images = Array.isArray(this.data) ? this.data: (this.data.images || []);
+
+    if (images > 0) {
+      for (const load of images) {
         const loadItem = this.creteNewItem(load);
 
         this.list.insertBefore(loadItem, this.addButton);
@@ -115,9 +169,14 @@ export default class SimpleCarousel {
   }
 
   // eslint-disable-next-line require-jsdoc
+  renderSettings() {
+    return this.tunes.render(this.tunesState);
+  }
+
+  // eslint-disable-next-line require-jsdoc
   save(blockContent) {
     const list = blockContent.getElementsByClassName(this.CSS.item);
-    const data = [];
+    const images = [];
 
     if (list.length > 0) {
       for (const item of list) {
@@ -133,11 +192,12 @@ export default class SimpleCarousel {
         Object.assign(imgData, {url, caption});
 
         if (item.firstChild.value) {
-          data.push(imgData);
+          images.push(imgData);
         }
       }
     }
-    return data;
+
+    return Object.assign({}, this.tunesState, {images});
   }
 
   /**

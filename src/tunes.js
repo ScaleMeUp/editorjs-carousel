@@ -1,6 +1,5 @@
 import { make } from './ui';
-import bgIcon from './svg/background.svg';
-import borderIcon from './svg/border.svg';
+import sliderIcon from './svg/slider.svg';
 import stretchedIcon from './svg/stretched.svg';
 
 /**
@@ -23,19 +22,14 @@ export default class Tunes {
   static get tunes() {
     return [
       {
-        name: 'withBorder',
-        icon: borderIcon,
-        title: 'With border'
+        name: 'slider',
+        icon: sliderIcon,
+        title: 'Display as Slider'
       },
       {
         name: 'stretched',
         icon: stretchedIcon,
-        title: 'Stretch image'
-      },
-      {
-        name: 'withBackground',
-        icon: bgIcon,
-        title: 'With background'
+        title: 'Stretch Slider to Full Screen'
       }
     ];
   }

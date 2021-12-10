@@ -115,6 +115,7 @@ export default class Ui {
    */
   createAddButton() {
     const addButton = make('div', [ this.CSS.button ]);
+
     addButton.innerHTML = this.config.buttonContent || `${buttonIcon} Add Image`;
     addButton.addEventListener('click', () => {
       this.nodes.list.appendChild();

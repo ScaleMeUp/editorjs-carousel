@@ -158,7 +158,7 @@ export default class SimpleCarousel {
 
     const images = Array.isArray(this.data) ? this.data: (this.data.images || []);
 
-    if (images > 0) {
+    if (images.length > 0) {
       for (const load of images) {
         const loadItem = this.creteNewItem(load);
 

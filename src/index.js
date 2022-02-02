@@ -25,7 +25,7 @@ export default class SimpleCarousel {
       field: config.field || 'image',
       types: config.types || 'image/*',
       captionPlaceholder: this.api.i18n.t('Caption'),
-      buttonContent: config.buttonContent || '',
+      buttonContent: config.buttonContent || 'Add Image',
       uploader: config.uploader || undefined
     };
     /**
@@ -367,7 +367,7 @@ export default class SimpleCarousel {
     const addButton = make('div', [this.CSS.button, this.CSS.addButton]);
     const block = make('div', [this.CSS.block, this.CSS.uploadBlock]);
 
-    addButton.innerHTML = `${buttonIcon} Add Image`;
+    addButton.innerHTML = `${buttonIcon} ${this.config.buttonContent}`;
     addButton.addEventListener('click', () => {
       this.onSelectFile();
     });

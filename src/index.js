@@ -191,6 +191,8 @@ export default class SimpleCarousel {
       contentEditable: true
     });
 
+    input.placeholder = 'https://drive.google.com/file/d/xxxxx/view?usp=sharing';
+
     input.oninput = () => {
       let value = this.uploadInput.innerHTML;
 

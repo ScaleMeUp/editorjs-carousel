@@ -171,3 +171,18 @@
     }
   }
 }
+
+.image-tool__input_title {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.image-tool__input {
+    width: 98%;
+    height: 30px;
+    border: 1px solid #cdd1e0;
+    margin-top: 15px;
+    background: #fff;
+    outline: none;
+    padding: 5px;
+}

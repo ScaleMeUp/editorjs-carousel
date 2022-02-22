@@ -26,7 +26,8 @@ export default class SimpleCarousel {
       types: config.types || 'image/*',
       captionPlaceholder: this.api.i18n.t('Caption'),
       buttonContent: config.buttonContent || 'Add Image',
-      uploader: config.uploader || undefined
+      uploader: config.uploader || undefined,
+      uploadInoutTitle: config.uploadInoutTitle || 'Or upload from Google Drive:',
     };
     /**
      * Module for file uploading
@@ -113,7 +114,9 @@ export default class SimpleCarousel {
       inputMeta: 'cdxcarousel-inputMeta',
       caption: 'cdxcarousel-caption',
       list: 'cdxcarousel-list',
-      imagePreloader: 'image-tool__image-preloader'
+      imagePreloader: 'image-tool__image-preloader',
+      inputUpload: 'image-tool__input',
+      inputUploadTitle: 'image-tool__input_title'
     };
   };
 
@@ -152,9 +155,15 @@ export default class SimpleCarousel {
     this.wrapper = make('div', [ this.CSS.wrapper ]);
     this.list = make('div', [ this.CSS.list ]);
     this.addButton = this.createAddButton();
+    this.uploadInput = this.createUploadInput();
+
+    this.uploadInputTitle = make('div', [ this.CSS.inputUploadTitle ]);
+    this.uploadInputTitle.innerHTML = this.config.uploadInoutTitle; // TODO: refactor
 
     this.list.appendChild(this.addButton);
     this.wrapper.appendChild(this.list);
+    this.wrapper.appendChild(this.uploadInputTitle);
+    this.wrapper.appendChild(this.uploadInput);
 
     const images = Array.isArray(this.data) ? this.data: (this.data.images || []);
 
@@ -165,12 +174,41 @@ export default class SimpleCarousel {
         this.list.insertBefore(loadItem, this.addButton);
       }
     }
+
     return this.wrapper;
   }
 
   // eslint-disable-next-line require-jsdoc
   renderSettings() {
     return this.tunes.render(this.tunesState);
+  }
+
+  /**
+   * @returns {Element}
+   */
+  createUploadInput() {
+    const input = make('div', [ this.CSS.inputUpload ], {
+      contentEditable: true
+    });
+
+    input.oninput = () => {
+      let value = this.uploadInput.innerHTML;
+
+      if (value.indexOf('view') !== -1) {
+        this.uploadInput.style.opacity = '0.2';
+        this.uploadInput.style.pointerEvents = 'none';
+
+        this.list.insertBefore(this.creteNewItem({}), this.addButton);
+
+        this.uploader.uploadByUrl(this.uploadInput.innerHTML);
+
+        this.uploadInput.innerHTML = '';
+        this.uploadInput.style.opacity = '1';
+        this.uploadInput.style.pointerEvents = 'auto';
+      }
+    };
+
+    return input;
   }
 
   // eslint-disable-next-line require-jsdoc
@@ -181,7 +219,9 @@ export default class SimpleCarousel {
     if (list.length > 0) {
       for (const item of list) {
         const imgData = {};
+        console.log(123123);
         const url = item.firstChild.value;
+        console.log('1test');
         const caption = item.lastChild.value;
         const metaEl = item.querySelector(`.${this.CSS.inputMeta}`);
 
@@ -331,6 +371,8 @@ export default class SimpleCarousel {
   uploadingFailed(errorText) {
     console.error('EditorJS - Carousel: uploading failed because of', errorText);
 
+    this.list.childNodes[this.list.childNodes.length - 2].remove();
+
     this.api.notifier.show({
       message: this.api.i18n.t('Can not upload an image, try another'),
       style: 'error'
@@ -371,6 +413,7 @@ export default class SimpleCarousel {
     addButton.addEventListener('click', () => {
       this.onSelectFile();
     });
+
     block.appendChild(addButton);
 
     return block;

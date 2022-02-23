@@ -1,4 +1,5 @@
 import ajax from '@codexteam/ajax';
+import fetch from 'node-fetch';
 
 /**
  * Module for file uploading. Handle 3 scenarios:
@@ -94,25 +95,39 @@ export default class Uploader {
       if (!isPromise(upload)) {
         console.warn('Custom uploader method uploadByUrl should return a Promise');
       }
+
+      upload.then((data) => {
+        this.onUpload(data);
+      }).catch((error) => {
+        this.onError(error);
+      });
     } else {
       /**
        * Default uploading
        */
-      upload = ajax.post({
-        url: this.config.endpoints.byUrl,
-        data: Object.assign({
+      upload = fetch(this.config.endpoints.byUrl, {
+        method: 'POST',
+        body: this.toFormData(Object.assign({
           url: url,
-        }, this.config.additionalRequestData),
+        }, this.config.additionalRequestData)),
         type: ajax.contentType.JSON,
         headers: this.config.additionalRequestHeaders,
-      }).then(response => response.body);
+      }).then((response) => {
+        return response.json();
+      }).then((data) => {
+        this.onUpload(data);
+      }).catch((error) => {
+        this.onError(error);
+      });
     }
+  }
 
-    upload.then((response) => {
-      this.onUpload(response);
-    }).catch((error) => {
-      this.onError(error);
-    });
+  /**
+   * @param o
+   * @returns {FormData}
+   */
+  toFormData(o) {
+    return Object.entries(o).reduce((d, e) => (d.append(...e), d), new window.FormData());
   }
 
   /**
@@ -142,6 +157,7 @@ export default class Uploader {
      */
     if (this.config.uploader && typeof this.config.uploader.uploadByFile === 'function') {
       upload = this.config.uploader.uploadByFile(file);
+
 
       if (!isPromise(upload)) {
         console.warn('Custom uploader method uploadByFile should return a Promise');

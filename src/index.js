@@ -221,9 +221,9 @@ export default class SimpleCarousel {
     if (list.length > 0) {
       for (const item of list) {
         const imgData = {};
-        console.log(123123);
+
         const url = item.firstChild.value;
-        console.log('1test');
+
         const caption = item.lastChild.value;
         const metaEl = item.querySelector(`.${this.CSS.inputMeta}`);
 

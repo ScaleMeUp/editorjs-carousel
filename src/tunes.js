@@ -87,8 +87,7 @@ export default class Tunes {
 
     button.classList.toggle(this.CSS.buttonActive, !button.classList.contains(this.CSS.buttonActive));
 
-    this.api.saver.save();
-
+    this.onChange(tuneName);
     window.dispatchCustomEvent(window, 'changeTune');
   }
 }

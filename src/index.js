@@ -164,9 +164,9 @@ export default class SimpleCarousel {
 
     this.list.appendChild(this.addButton);
     this.wrapper.appendChild(this.list);
-    this.wrapper.appendChild(this.uploadInputTitle);
 
     if (this.config.isGoogleDriveEnabled) {
+      this.wrapper.appendChild(this.uploadInputTitle);
       this.wrapper.appendChild(this.uploadInput);
     }
 

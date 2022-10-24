@@ -28,6 +28,7 @@ export default class SimpleCarousel {
       buttonContent: config.buttonContent || 'Add Image',
       uploader: config.uploader || undefined,
       uploadInoutTitle: config.uploadInoutTitle || 'Or upload from Google Drive:',
+      isGoogleDriveEnabled: config.isGoogleDriveEnabled || false,
     };
     /**
      * Module for file uploading
@@ -155,6 +156,7 @@ export default class SimpleCarousel {
     this.wrapper = make('div', [ this.CSS.wrapper ]);
     this.list = make('div', [ this.CSS.list ]);
     this.addButton = this.createAddButton();
+
     this.uploadInput = this.createUploadInput();
 
     this.uploadInputTitle = make('div', [ this.CSS.inputUploadTitle ]);
@@ -163,7 +165,10 @@ export default class SimpleCarousel {
     this.list.appendChild(this.addButton);
     this.wrapper.appendChild(this.list);
     this.wrapper.appendChild(this.uploadInputTitle);
-    this.wrapper.appendChild(this.uploadInput);
+
+    if (this.config.isGoogleDriveEnabled) {
+      this.wrapper.appendChild(this.uploadInput);
+    }
 
     const images = Array.isArray(this.data) ? this.data: (this.data.images || []);
 
